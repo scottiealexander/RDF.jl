@@ -23,6 +23,7 @@ function trial_labels(p::RDFParams, x::Vector{UInt8})
 end
 # ---------------------------------------------------------------------------- #
 @inline Base.getindex(p::RDFParams, k::AbstractString) = p.d[k]
+Base.show(io::IO, p::RDFParams) = Base.show(io, "text/plain", p.d)
 # ============================================================================ #
 mutable struct RDFFile
     path::String
@@ -61,6 +62,15 @@ function RDFFile(path::AbstractString)
     end
 
     return r
+end
+# ---------------------------------------------------------------------------- #
+function Base.show(io::IO, r::RDFFile)
+    print(io, "RDFFile @ \"$(r.path)\" with ")
+    nchan = length(r.ids)
+    println(io, "$(nchan) channel(s):")
+    for k = 1:nchan
+        println("  channel $(k): id = $(r.ids[k]), type = $(get_eltype(r, k))")
+    end
 end
 # ---------------------------------------------------------------------------- #
 function read_channel(r::RDFFile, id::Integer)
