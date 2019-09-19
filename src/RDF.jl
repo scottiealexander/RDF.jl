@@ -69,7 +69,7 @@ function read_channel(r::RDFFile, id::Integer)
     elt = get_eltype(r, id)
     data = Vector{elt}(undef, 0)
     ts = Vector{Float32}(undef, 0)
-    idx = Vector{Int}(undef, 0)
+    #idx = Vector{Int}(undef, 0)
     open(r.path, "r") do io
         seekend(io)
         len = position(io)
@@ -85,7 +85,7 @@ function read_channel(r::RDFFile, id::Integer)
             nel = read(io, Int32)
 
             if idp == id
-                push!(idx, length(data))
+                #push!(idx, length(data))
                 tmp = Vector{elt}(undef, nel)
                 read!(io, tmp)
                 append!(data, tmp)
@@ -98,7 +98,7 @@ function read_channel(r::RDFFile, id::Integer)
             end
         end
     end
-    return data, ts, idx
+    return data, Vector{Float64}(ts)#, idx
 end
 # ---------------------------------------------------------------------------- #
 function get_eltype(r::RDFFile, id::Integer)
@@ -138,7 +138,7 @@ end
 function spike_times(data::AbstractVector{<:Real})
     win = 64
     thr = 0.97f0
-    ts = Vector{Float32}()
+    ts = Vector{Float64}()
     k = 1
     si = (1.0f0 / SAMPLE_RATE)
     while k < length(data)
