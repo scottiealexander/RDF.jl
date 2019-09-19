@@ -174,7 +174,12 @@ function parse_ini_file(pth::AbstractString)
                 val = map(x -> parse(Float64, x), split(m[2][2:ke], r"[,\s]+"))
                 d[m[1]] = val
             else
-                d[m[1]] = m[2]
+                val = tryparse(Float64, m[2])
+                if val == nothing
+                    d[m[1]] = m[2]
+                else
+                    d[m[1]] = val
+                end
             end
         else
             @warn("Invalid statement: \"$(line)\"")
